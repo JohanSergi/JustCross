@@ -1,38 +1,69 @@
-.App {
-  text-align: center;
+.details{
+  width: 50%;
+  border: 1px solid black;
+  margin: 50px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.GateSelected{
+  border: 1px solid black;
+  margin: 50px;
+  padding: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.GateStatus{
+  border: 1px solid black;
+  margin: 50px;
+  padding: 20px;
+  max-width: 30%;
+  background-color: #059669;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.MainContainer{
   display: flex;
-  flex-direction: column;
-  align-items: center;
+}
+
+.gates-container {
+  gap: 16px;
+  padding: 20px;
+  margin-top: 50px;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  background: #f9fafb; /* soft gray background */
+
+}
+
+.gate-button {
+  background-color: #2563eb; /* blue */
   color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 12px 24px;
+  width: 200px;
+  margin: 5px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.App-link {
-  color: #61dafb;
+.gate-button:hover {
+  background-color: #1e40af; /* darker blue */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.gate-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Selected gate visual state */
+.gate-button.selected {
+  background-color: #059669; /* green */
+  box-shadow: 0 6px 14px rgba(5, 150, 105, 0.35);
+}
+
+.gate-button.selected:hover {
+  background-color: #047857; /* darker green */
 }
