@@ -1,8 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useGate } from '../context/GateContext'
 
 function Details() {
   const { selectedGate } = useGate();
+  useEffect(() => {
+    const fetchTrains = async () => {
+      const response = await fetch('/trains',{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+      const data = await response.json()
+      if (response.ok){
+        console.log("response recieved")
+        console.log(data)
+      }
+    }
+    fetchTrains()
+  },[])
   return (
     <div className='details'>
         <div className='GateSelected'>
