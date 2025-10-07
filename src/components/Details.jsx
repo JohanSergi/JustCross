@@ -5,16 +5,21 @@ function Details() {
   const { selectedGate } = useGate();
   useEffect(() => {
     const fetchTrains = async () => {
-      const response = await fetch('/trains',{
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
+      try{
+        const response = await fetch('/trains',{
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+        if(!response.ok){
+          throw new Error(`Request failed: ${response.status}`)
         }
-    })
-      const data = await response.json()
-      if (response.ok){
+        const data = await response.json()
         console.log("response recieved")
         console.log(data)
+      }catch(err){
+        console.error('Failed to fetch trains:', err)
       }
     }
     fetchTrains()

@@ -5,8 +5,8 @@ const trainsSchema = new mongoose.Schema({
   "Train Name": String,
   "From": String,
   "To": String,
-  "Departure": Number,
-  "Arrival": Number,
+  "Departure_minutes": Number,
+  "Arrival_minutes": Number,
 }, { collection: "Trains" }); 
 
 export default mongoose.model("Trains", trainsSchema);
