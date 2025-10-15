@@ -18,8 +18,15 @@ const getTrains = async (req, res) => {
       train_no.add(train["Train Number"])
     })
     console.log("trains nos: ",train_no)
-    getStatus();
-    res.json(trains);
+    // for (const value of train_no) {
+    //   getApi(value);
+    // }
+
+    const firstValue = [...train_no][0] || 16343;
+    const apiData = await getApi(firstValue);
+    const eta = getETA(apiData);
+    const etc = subtract30Minutes(eta)
+    res.json(etc);
   }
   catch (error) {
     res.status(500).json({error: "server error: couldn't get trains from database"})
@@ -27,27 +34,54 @@ const getTrains = async (req, res) => {
   }
 };
 
-const getStatus = async () => {
   
-    const date = 20251007
+const getApi = async (trainNo) =>{
+    const date = 20251015
+    const response = await fetch(
+      `${process.env.API_URL}?departure_date=${date}&isH5=true&client=web&train_number=${trainNo}`,
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": "bb1ccdd0ecmshd58af927c0f05abp10567cjsn12c9ea2dc274", 
+          "x-rapidapi-host": "indian-railway-irctc.p.rapidapi.com",
+        },
+      }
+    );
 
-    const getApi = async (trainNo) =>{
-      const response = await fetch(
-       `${process.env.API_URL}?departure_date=${date}&isH5=true&client=web&train_number=${trainNo}`,
-        {
-          method: "GET",
-          headers: {
-            "x-rapidapi-key": "d3e1813a75msh38daf7b6795df1cp1a847djsnc7b0f1ea4f19", 
-            "x-rapidapi-host": "indian-railway-irctc.p.rapidapi.com",
-          },
-        }
-      );
+    const result = await response.json();
 
-      const result = await response.json();
-
-      console.log(result)
+    console.log(result)
+    return result;
+  }
+  
+  const getETA = (data) => {
+    const targetStation = "QLN";
+    if (!data || !data.body || !Array.isArray(data.body.stations)) {
+      return null;
     }
-    getApi(16792)
-}
+    const station = data.body.stations.find(stn => stn.stationCode === targetStation);
 
+    if (station) {
+      console.log("Arrival Time:", station.actual_arrival_time);
+      return(station.actual_arrival_time)
+    } else {
+      console.log("Station not found!");
+    }
+
+  }
+
+  function subtract30Minutes(timeStr) {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+  
+    date.setMinutes(date.getMinutes() - 30);
+  
+    const newHours = String(date.getHours()).padStart(2, "0");
+    const newMinutes = String(date.getMinutes()).padStart(2, "0");
+  
+    return `${newHours}:${newMinutes}`;
+  }
+  
 export { getTrains };

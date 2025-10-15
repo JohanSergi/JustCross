@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGate } from '../context/GateContext'
 
 function Details() {
   const { selectedGate } = useGate();
-  useEffect(() => {
-    const fetchTrains = async () => {
+  const [eta,setEta] = useState("");
+    
+  const fetchTrains = async () => {
       try{
         const response = await fetch('/trains',{
           method: 'GET',
@@ -18,12 +19,11 @@ function Details() {
         const data = await response.json()
         console.log("response recieved")
         console.log(data)
+        setEta(data)
       }catch(err){
         console.error('Failed to fetch trains:', err)
       }
-    }
-    fetchTrains()
-  },[])
+  }
   return (
     <div className='details'>
         <div className='GateSelected'>
@@ -39,7 +39,7 @@ function Details() {
         </div>
         <div>
             <div className='ET'>
-
+              <h1>Estimated time of closing:{eta}</h1>
             </div>
             <div className='ET'>
 
@@ -48,6 +48,7 @@ function Details() {
         <div className='Map'>
 
         </div>
+        <button onClick={fetchTrains}>get details </button>
     </div>
   )
 }
