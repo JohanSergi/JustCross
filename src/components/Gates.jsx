@@ -6,7 +6,7 @@ function Gates() {
     "kallumthazham",
     "college jn",
     "beach road",
-    "kundara"
+    "Chathinamkulam"
   ]
   return (
     <div className="gates-container">

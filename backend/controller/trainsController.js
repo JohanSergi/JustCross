@@ -7,12 +7,26 @@ const getTrains = async (req, res) => {
   try{
     const now = new Date();
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    const oneHourLater = nowMinutes + 60;
+    const fourHoursLater = nowMinutes + 420;
+
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const today = daysOfWeek[now.getDay()];
+    console.log(`📅 Today is: ${today}`);
 
     const trains = await Trains.find({
-    "Arrival_minutes": { "$gte": nowMinutes, "$lte": oneHourLater }
+      "Arrival_minutes": { "$gte": nowMinutes, "$lte": fourHoursLater },
+      [today]: 1
     });
 
+    
 
     trains.forEach(train => {
       train_no.add(train["Train Number"])
@@ -21,6 +35,8 @@ const getTrains = async (req, res) => {
     // for (const value of train_no) {
     //   getApi(value);
     // }
+
+
 
     const firstValue = [...train_no][0] || 16343;
     const apiData = await getApi(firstValue);
@@ -34,11 +50,12 @@ const getTrains = async (req, res) => {
   }
 };
 
-  
 const getApi = async (trainNo) =>{
-    const date = 20251015
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`;
+
     const response = await fetch(
-      `${process.env.API_URL}?departure_date=${date}&isH5=true&client=web&train_number=${trainNo}`,
+      `${process.env.API_URL}?departure_date=${formattedDate}&isH5=true&client=web&train_number=${trainNo}`,
       {
         method: "GET",
         headers: {
@@ -70,18 +87,16 @@ const getApi = async (trainNo) =>{
 
   }
 
-  function subtract30Minutes(timeStr) {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
-  
-    date.setMinutes(date.getMinutes() - 30);
-  
-    const newHours = String(date.getHours()).padStart(2, "0");
-    const newMinutes = String(date.getMinutes()).padStart(2, "0");
-  
-    return `${newHours}:${newMinutes}`;
-  }
+function subtract30Minutes(timeStr) {
+  if (!timeStr || !timeStr.includes(":")) return "--:--";
+
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  const total = (hours * 60 + minutes - 30 + 1440) % 1440;
+  const newHours = String(Math.floor(total / 60)).padStart(2, "0");
+  const newMinutes = String(total % 60).padStart(2, "0");
+
+  return `${newHours}:${newMinutes}`;
+}
+
   
 export { getTrains };
